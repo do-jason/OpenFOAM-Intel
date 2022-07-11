@@ -43,9 +43,15 @@ else
 	surface=$(which surfaceFeatureExtract)
 fi
 
+if [[ "$WM_PROJECT_VERSION" -ge 9 || "$WM_PROJECT_VERSION" = "dev" ]]; then
+ scopechar="/"
+else
+ scopechar="."
+fi
+
 # This will limit global number of cell to 50000000(50M)
 # If you need to create mesh larger than 50M, then increase this value
-foamDictionary -entry "castellatedMeshControls.maxGlobalCells" -set "50000000" system/snappyHexMeshDict
+foamDictionary -entry castellatedMeshControls${scopechar}maxGlobalCells -set "50000000" system/snappyHexMeshDict
 # This will reduce number of iteration from 500 to 250
 foamDictionary -entry "endTime" -set "250" system/controlDict
 # This will prevent writing some files and removes I/O activity during the run
