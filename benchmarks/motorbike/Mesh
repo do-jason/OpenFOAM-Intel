@@ -44,9 +44,9 @@ else
 fi
 
 if [[ "$WM_PROJECT_VERSION" -ge 9 || "$WM_PROJECT_VERSION" = "dev" ]]; then
- scopechar="/"
+	scopechar="/"
 else
- scopechar="."
+	scopechar="."
 fi
 
 # This will limit global number of cell to 50000000(50M)
