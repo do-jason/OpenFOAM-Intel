@@ -28,6 +28,7 @@ cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
 [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/cuttingPlane ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/cuttingPlane system/
 [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/forceCoeffs ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/forceCoeffs system/
 [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamLines ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamLines system/
+[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamlines ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamlines system/
 [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/snappyHexMeshDict ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/snappyHexMeshDict system/
 [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/wallBoundedStreamLines ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/wallBoundedStreamLines system/
 [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/ensightWrite ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/ensightWrite system/
