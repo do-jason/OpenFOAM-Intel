@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 cd ${0%/*} || exit 1    # run from this directory
 
 # Source tutorial run functions
@@ -44,7 +45,7 @@ else
 	surface=$(which surfaceFeatureExtract)
 fi
 
-if [[ "$WM_PROJECT_VERSION" -ge 9 || "$WM_PROJECT_VERSION" = "dev" ]]; then
+if [[ $WM_PROJECT_VERSION -ge 9 || "$WM_PROJECT_VERSION" = "dev" ]]; then
 	scopechar="/"
 else
 	scopechar="."
