@@ -13,44 +13,60 @@ NPROCS=16
 
 echo "Setting up with $NPROCS procs.  Blockmesh size = $NX x $NY x $NZ"
 
+
+[[ $FOAM_API =~ ^[0-9]{2}(06|12)$ ]] && OPENCFD=1 || OPENCFD=0
+# Specific case when OpenFOAM Foundation version 9 and later
+[[ $WM_PROJECT_VERSION -ge 9 ]] && scopechar="/" || scopechar="."
+
 mkdir -p constant/polyMesh
 mkdir -p constant/triSurface
-if [[ ! -f constant/geometry ]]; then
-    ln -s triSurface constant/geometry
-fi
+[[ ! -f constant/geometry ]] && ln -s triSurface constant/geometry
 
 sed "s/NX/$NX/g;s/NY/$NY/g;s/NZ/$NZ/g" system/blockMeshDict-mesh.in > system/blockMeshDict
+[[ $OPENCFD = "1" ]] && sed -i "s/convertToMeters/scale/g" system/blockMeshDict
 cp -f system/decomposeParDict-mesh.in system/decomposeParDict
 
 # copy motorbike surface from resources directory
-cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
+if [[ -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz ]]; then
+ cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
+fi
 
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/meshQualityDict ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/meshQualityDict system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/cuttingPlane ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/cuttingPlane system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/forceCoeffs ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/forceCoeffs system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamLines ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamLines system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamlines ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/streamlines system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/snappyHexMeshDict ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/snappyHexMeshDict system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/wallBoundedStreamLines ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/wallBoundedStreamLines system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/ensightWrite ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/ensightWrite system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/topoSetDict ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/topoSetDict system/
-[[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/controlDict ]] && cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/controlDict system/
+# Copy files from tutorials directory in case of updated input deck for new OpenFOAM version
+files=(
+ "meshQualityDict"
+ "cuttingPlane"
+ "forceCoeffs"
+ "streamLines"
+ "streamlines"
+ "solverInfo"
+ "graphFunctionObject"
+ "foamReport"
+ "snappyHexMeshDict"
+ "wallBoundedStreamLines"
+ "ensightWrite"
+ "topoSetDict"
+ "controlDict"
+ "surfaceFeaturesDict"
+ "surfaceFeatureExtractDict"
+)
+
+for file in "${files[@]}"
+do
+ if [[ -f "$FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/$file" ]]; then
+  cp -f "$FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/$file" system/
+ fi
+done
+
 if [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/surfaceFeaturesDict ]]; then
-    cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/surfaceFeaturesDict system/
     surface=$(which surfaceFeatures)
 elif [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/surfaceFeatureExtractDict ]]; then
-    cp -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/surfaceFeatureExtractDict system/
     surface=$(which surfaceFeatureExtract)
 else
 	surface=$(which surfaceFeatureExtract)
 fi
 
-if [[ $WM_PROJECT_VERSION -ge 9 || "$WM_PROJECT_VERSION" = "dev" ]]; then
-	scopechar="/"
-else
-	scopechar="."
-fi
-
+# This will prevent some diagnostic function calls during the run
+sed -i "s@#include@// #include@g" system/controlDict
 # This will limit global number of cell to 50000000(50M)
 # If you need to create mesh larger than 50M, then increase this value
 foamDictionary -entry castellatedMeshControls${scopechar}maxGlobalCells -set "50000000" system/snappyHexMeshDict
@@ -60,8 +76,7 @@ foamDictionary -entry "startFrom" -set "startTime" system/controlDict
 foamDictionary -entry "endTime" -set "250" system/controlDict
 # This will prevent writing some files and removes I/O activity during the run
 foamDictionary -entry "writeInterval" -set "500" system/controlDict
-# This will prevent some diagnostic function calls during the run
-sed -i "s@#include@// #include@g" system/controlDict
+
 
 runApplication $(basename $surface)
 
