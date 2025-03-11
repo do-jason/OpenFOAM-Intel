@@ -21,6 +21,7 @@ echo "Setting up with $NPROCS procs.  Blockmesh size = $NX x $NY x $NZ"
 
 mkdir -p constant/polyMesh
 mkdir -p constant/triSurface
+[[ -h constant/geometry && ! -e constant/geometry ]] && rm -f constant/geometry
 [[ ! -h constant/geometry ]] && ln -s triSurface constant/geometry
 
 sed "s/NPROCS/$NPROCS/g" system/decomposeParDict-mesh.in > system/decomposeParDict
