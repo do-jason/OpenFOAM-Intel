@@ -7,6 +7,7 @@ cd ${0%/*} || exit 1    # run from this directory
 
 NPROCS=$1
 
+
 echo "Running with $NPROCS procs."
 
 sed "s/NPROCS/$NPROCS/g" system/decomposeParDict-solve.in > system/decomposeParDict

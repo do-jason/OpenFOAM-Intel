@@ -11,6 +11,7 @@ cd ${0%/*} || exit 1    # run from this directory
 #
 
 if [[ $WM_PROJECT_VERSION -ge 11 ]]; then
+# OpenFOAM Foundation version 11 and later changed a lot of things
  runParallel foamRun -solver incompressibleFluid
 # mpirun -n $(getNumberOfProcessors) foamRun -parallel -solver incompressibleFluid
  if [[ $? -ne 0 ]]; then
