@@ -13,6 +13,10 @@ sed "s/NPROCS/$NPROCS/g" system/decomposeParDict-solve.in > system/decomposeParD
 
 rm -rf processor*
 runApplication -a decomposePar
+if [[ $? -ne 0 ]]; then
+ echo "decomposePar failed"
+ exit
+fi
 
 #- For non-parallel running
 #cp -r 0.org 0 > /dev/null 2>&1
@@ -22,9 +26,15 @@ ls -d processor* | xargs -I {} rm -rf ./{}/0
 ls -d processor* | xargs -I {} cp -r 0.org ./{}/0
 
 runParallel checkMesh
-#mpirun -n $NPROCS checkMesh -parallel
+#mpirun -n $(getNumberOfProcessors) checkMesh -parallel
+if [[ $? -ne 0 ]]; then
+ echo "checkMesh failed"
+ exit
+fi
 
 runParallel potentialFoam
-#mpirun -n $NPROCS potentialFoam -parallel
-
-# ----------------------------------------------------------------- end-of-file
+#mpirun -n $(getNumberOfProcessors) potentialFoam -parallel
+if [[ $? -ne 0 ]]; then
+ echo "potentialFoam failed"
+ exit
+fi

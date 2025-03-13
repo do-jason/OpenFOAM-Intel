@@ -1,0 +1,133 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  12
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version         2;
+    format          ascii;
+    class           dictionary;
+    object          snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true;
+
+snap            true;
+
+addLayers       true;
+
+geometry
+{
+    motorBike
+    {
+        type            triSurfaceMesh;
+        file            "motorBike.obj";
+    }
+    refinementBox
+    {
+        type            searchableBox;
+        min             ( -1 -0.7 0 );
+        max             ( 8 0.7 2.5 );
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells   100000;
+    maxGlobalCells  50000000;
+    minRefinementCells 10;
+    maxLoadUnbalance 0.1;
+    nCellsBetweenLevels 3;
+    features        ( { file "motorBike.eMesh" ; level 6 ; } );
+    refinementSurfaces
+    {
+        motorBike
+        {
+            level           ( 5 6 );
+            patchInfo
+            {
+                type            wall;
+                inGroups        ( motorBikeGroup );
+            }
+        }
+    }
+    resolveFeatureAngle 30;
+    refinementRegions
+    {
+        refinementBox
+        {
+            mode            inside;
+            levels          ( ( 1e+15 4 ) );
+        }
+    }
+    locationInMesh  ( 3.0001 3.0001 0.43 );
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch    3;
+    tolerance       2;
+    nSolveIter      30;
+    nRelaxIter      5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap false;
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap false;
+}
+
+addLayersControls
+{
+    relativeSizes   true;
+    layers
+    {
+        "(lowerWall|motorBike).*"
+        {
+            nSurfaceLayers  1;
+        }
+    }
+    expansionRatio  1;
+    finalLayerThickness 0.3;
+    minThickness    0.1;
+    nGrow           0;
+    featureAngle    60;
+    slipFeatureAngle 30;
+    nRelaxIter      3;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals  3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedianAxisAngle 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter      50;
+}
+
+meshQualityControls
+{
+    maxNonOrtho     65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave      80;
+    minVol          1e-13;
+    minTetQuality   1e-15;
+    minArea         -1;
+    minTwist        0.02;
+    minDeterminant  0.001;
+    minFaceWeight   0.02;
+    minVolRatio     0.01;
+    minTriangleTwist -1;
+    nSmoothScale    4;
+    errorReduction  0.75;
+}
+
+writeFlags      ( scalarLevels layerSets layerFields );
+
+mergeTolerance  1e-06;
+
+
+// ************************************************************************* //

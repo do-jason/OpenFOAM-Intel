@@ -13,69 +13,83 @@ NPROCS=16
 
 echo "Setting up with $NPROCS procs.  Blockmesh size = $NX x $NY x $NZ"
 
-
 # Check if OpenFOAM is from OpenCFD
 [[ $FOAM_API =~ ^[0-9]{2}(06|12)$ ]] && OPENCFD=1 || OPENCFD=0
-# Specific case when OpenFOAM Foundation version 9 and later
+# Specific case when OpenFOAM Foundation version 9/11 and later
 [[ $WM_PROJECT_VERSION -ge 9 ]] && scopechar="/" || scopechar="."
+if [[ $WM_PROJECT_VERSION -ge 11 ]]; then
+ baseDir=$FOAM_TUTORIALS/incompressibleFluid/motorBike/motorBike
+else
+ baseDir=$FOAM_TUTORIALS/incompressible/simpleFoam/motorBike
+fi
 
-mkdir -p constant/polyMesh
+
+# Copy 0/ directory
+if [[ -d $baseDir/0 ]]; then
+ rm -rf 0.org/*
+ cp -rf $baseDir/0/* 0.org/
+elif [[ -d $baseDir/0.orig ]]; then
+ rm -rf 0.org/*
+ cp -rf $baseDir/0.orig/* 0.org/
+elif [[ -d $baseDir/0.org ]]; then
+ rm -rf 0.org/*
+ cp -rf $baseDir/0.org/* 0.org/
+fi
+
+# Copy constant/ directory
+[[ -d constant ]] && rm -rf constant
 mkdir -p constant/triSurface
-[[ -h constant/geometry && ! -e constant/geometry ]] && rm -f constant/geometry
-[[ ! -h constant/geometry ]] && ln -s triSurface constant/geometry
-
-sed "s/NPROCS/$NPROCS/g" system/decomposeParDict-mesh.in > system/decomposeParDict
-sed "s/NX/$NX/g;s/NY/$NY/g;s/NZ/$NZ/g" system/blockMeshDict-mesh.in > system/blockMeshDict
-[[ $OPENCFD = "1" ]] && sed -i "s/convertToMeters/scale/g" system/blockMeshDict
-
-# copy motorbike surface from resources directory
+ln -s triSurface constant/geometry
 if [[ -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz ]]; then
  echo "Copying $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz to constant/triSurface/"
  cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
 fi
+find $baseDir/constant/ -maxdepth 1 -type f -exec cp -f {} constant/ \;
 
-# Copy files from tutorials directory in case of updated input deck for new OpenFOAM version
+# Copy system/ directory
 files=(
- "meshQualityDict"
- "cuttingPlane"
- "forceCoeffs"
- "streamLines"
- "streamlines"
- "solverInfo"
- "graphFunctionObject"
- "foamReport"
- "snappyHexMeshDict"
- "wallBoundedStreamLines"
- "ensightWrite"
- "topoSetDict"
  "controlDict"
- "surfaceFeaturesDict"
  "surfaceFeatureExtractDict"
+ "blockMeshDict"
+ "fvSchemes"
 )
 
 for file in "${files[@]}"
 do
- if [[ -f "$FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/$file" ]]; then
-  echo "Copying $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/$file to system/"
-  cp -f "$FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/$file" system/
+ if [[ -f "$baseDir/system/$file" ]]; then
+  echo "Copying $baseDir/system/$file to system/"
+  cp -f "$baseDir/system/$file" system/
  fi
 done
 
+#if [[ $OPENCFD = "1" ]]; then
+# afiles=(
+#  "snappyHexMeshDict"
+#  "meshQualityDict"
+# )
+# if [[ -f "$baseDir/system/$file" ]]; then
+#  echo "Copying $baseDir/system/$file to system/"
+#  cp -f "$baseDir/system/$file" system/
+# fi
+#fi
+
 # Check surfaceFexture extraction executable from different OpenFOAM version
-if [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/surfaceFeaturesDict ]]; then
-    surface=$(which surfaceFeatures)
-elif [[ -f $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike/system/surfaceFeatureExtractDict ]]; then
+if [[ -f $baseDir/system/surfaceFeatureExtractDict ]]; then
     surface=$(which surfaceFeatureExtract)
 else
-	surface=$(which surfaceFeatureExtract)
+    surface=$(which surfaceFeatures)
 fi
 
 # This will prevent some diagnostic function calls during the run
 sed -i "s@#include@// #include@g" system/controlDict
 
+sed "s/NPROCS/$NPROCS/g" system/decomposeParDict-mesh.in > system/decomposeParDict
+sed -i "/hex/c\    hex (0 1 2 3 4 5 6 7) (${NX} ${NY} ${NZ}) simpleGrading (1 1 1)" system/blockMeshDict
+
 # This will limit global number of cell to 50000000(50M)
 # If you need to create mesh larger than 50M, then increase this value
 foamDictionary -entry castellatedMeshControls${scopechar}maxGlobalCells -set "50000000" system/snappyHexMeshDict
+foamDictionary -entry addLayersControls${scopechar}minMedialAxisAngle -set "90" system/snappyHexMeshDict
 # This will make OpenFOAM start from "startTime" not "latestTime"
 foamDictionary -entry "startFrom" -set "startTime" system/controlDict
 # This will reduce number of iteration from 500 to 250
@@ -83,19 +97,49 @@ foamDictionary -entry "endTime" -set "250" system/controlDict
 # This will prevent writing some files and removes I/O activity during the run
 foamDictionary -entry "writeInterval" -set "500" system/controlDict
 
-
-runApplication $(basename $surface)
+if [[ -x $surface ]]; then
+ runApplication $(basename $surface)
+ if [[ $? -ne 0 ]]; then
+  echo "$(basename $surface) failed"
+  exit
+ fi
+fi
 
 runApplication blockMesh
+if [[ $? -ne 0 ]]; then
+ echo "blockMesh failed"
+ exit
+fi
 
 runApplication decomposePar
+if [[ $? -ne 0 ]]; then
+ echo "decomposePar failed"
+ exit
+fi
 
 runParallel snappyHexMesh -overwrite
-#mpirun -n $NPROCS snappyHexMesh -overwrite -parallel
+#mpirun -n $(getNumberOfProcessors) snappyHexMesh -overwrite -parallel
+if [[ $? -ne 0 ]]; then
+ echo "snappyHexMesh failed"
+ exit
+fi
 
-runApplication reconstructParMesh -constant
+if [[ $WM_PROJECT_VERSION -ge 11 ]]; then
+ runApplication reconstructPar -constant
+ if [[ $? -ne 0 ]]; then
+  echo "reconstructPar failed"
+  exit
+ fi
+else
+ runApplication reconstructParMesh -constant
+ if [[ $? -ne 0 ]]; then
+  echo "reconstructParMesh failed"
+  exit
+ fi
+fi
 rm -rf processor*
 
 # This is optional. This may improve performance and may cause more unstable result for some cases
 runApplication renumberMesh -constant -overwrite
+[[ $? -ne 0 ]] && echo "reconstructPar* failed"
 
