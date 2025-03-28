@@ -5,6 +5,8 @@ cd ${0%/*} || exit 1    # run from this directory
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
+[[ $# -lt 3 ]] && { echo "$0 Nx Ny Nz"; exit 1; }
+
 NX=$1
 NY=$2
 NZ=$3
@@ -27,25 +29,25 @@ fi
 
 # Copy 0/ directory
 if [[ -d $baseDir/0 ]]; then
- rm -rf 0.org/*
- cp -rf $baseDir/0/* 0.org/
+ \rm -rf 0.org/*
+ \cp -rf $baseDir/0/* 0.org/
 elif [[ -d $baseDir/0.orig ]]; then
- rm -rf 0.org/*
- cp -rf $baseDir/0.orig/* 0.org/
+ \rm -rf 0.org/*
+ \cp -rf $baseDir/0.orig/* 0.org/
 elif [[ -d $baseDir/0.org ]]; then
- rm -rf 0.org/*
- cp -rf $baseDir/0.org/* 0.org/
+ \rm -rf 0.org/*
+ \cp -rf $baseDir/0.org/* 0.org/
 fi
 
 # Copy constant/ directory
 [[ -d constant ]] && rm -rf constant
-mkdir -p constant/triSurface
-ln -s triSurface constant/geometry
+\mkdir -p constant/triSurface
+\ln -s triSurface constant/geometry
 if [[ -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz ]]; then
  echo "Copying $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz to constant/triSurface/"
- cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
+ \cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
 fi
-find $baseDir/constant/ -maxdepth 1 -type f -exec cp -f {} constant/ \;
+find $baseDir/constant/ -maxdepth 1 -type f -exec \cp -f {} constant/ \;
 
 # Copy system/ directory
 files=(
@@ -59,15 +61,15 @@ for file in "${files[@]}"
 do
  if [[ -f "$baseDir/system/$file" ]]; then
   echo "Copying $baseDir/system/$file to system/"
-  cp -f "$baseDir/system/$file" system/
+  \cp -f "$baseDir/system/$file" system/
  fi
 done
 
 # Check surfaceFexture extraction executable from different OpenFOAM version
 if [[ -f $baseDir/system/surfaceFeatureExtractDict ]]; then
-    surface=$(which surfaceFeatureExtract)
+ surface=$(which surfaceFeatureExtract)
 else
-    surface=$(which surfaceFeatures)
+ surface=$(which surfaceFeatures)
 fi
 
 # This will prevent some diagnostic function calls during the run
@@ -92,43 +94,43 @@ if [[ -x $surface ]]; then
  runApplication $(basename $surface)
  if [[ $? -ne 0 ]]; then
   echo "$(basename $surface) failed"
-  exit
+  exit 1
  fi
 fi
 
 runApplication blockMesh
 if [[ $? -ne 0 ]]; then
  echo "blockMesh failed"
- exit
+ exit 1
 fi
 
 runApplication decomposePar
 if [[ $? -ne 0 ]]; then
  echo "decomposePar failed"
- exit
+ exit 1
 fi
 
 runParallel snappyHexMesh -overwrite
 #mpirun -n $(getNumberOfProcessors) snappyHexMesh -overwrite -parallel
 if [[ $? -ne 0 ]]; then
  echo "snappyHexMesh failed"
- exit
+ exit 1
 fi
 
 if [[ $WM_PROJECT_VERSION -ge 11 ]]; then
  runApplication reconstructPar -constant
  if [[ $? -ne 0 ]]; then
   echo "reconstructPar failed"
-  exit
+  exit 1
  fi
 else
  runApplication reconstructParMesh -constant
  if [[ $? -ne 0 ]]; then
   echo "reconstructParMesh failed"
-  exit
+  exit 1
  fi
 fi
-rm -rf processor*
+\rm -rf processor*
 
 # This is optional. This may improve performance and may cause more unstable result for some cases
 runApplication renumberMesh -constant -overwrite

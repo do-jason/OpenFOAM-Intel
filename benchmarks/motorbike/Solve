@@ -16,14 +16,14 @@ if [[ $WM_PROJECT_VERSION -ge 11 ]]; then
 # mpirun -n $(getNumberOfProcessors) foamRun -parallel -solver incompressibleFluid
  if [[ $? -ne 0 ]]; then
   echo "foamRun -solver incompressibleFluid failed"
-  exit
+  exit 1
  fi
 else
  runParallel simpleFoam
 # mpirun -n $(getNumberOfProcessors) simpleFoam -parallel
  if [[ $? -ne 0 ]]; then
   echo "simpleFoam failed"
-  exit
+  exit 1
  fi
 fi
 

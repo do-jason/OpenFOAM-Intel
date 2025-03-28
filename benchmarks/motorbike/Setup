@@ -5,37 +5,40 @@ cd ${0%/*} || exit 1    # run from this directory
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
-NPROCS=$1
 
+if [[ $# -ge 1 ]]; then
+ NPROCS=$1
+else
+# Assume 2 threads per physical core
+ NPROCS=$(($(nproc)/2))
+ echo "NPROCS is not specified. Using existing number of cores of this node..."
+fi
 
 echo "Running with $NPROCS procs."
 
 sed "s/NPROCS/$NPROCS/g" system/decomposeParDict-solve.in > system/decomposeParDict
 
-rm -rf processor*
+\rm -rf processor*
 runApplication -a decomposePar
 if [[ $? -ne 0 ]]; then
  echo "decomposePar failed"
- exit
+ exit 1
 fi
 
 #- For non-parallel running
-#cp -r 0.org 0 > /dev/null 2>&1
+#\cp -r 0.org 0 > /dev/null 2>&1
 
 #- For parallel running
-ls -d processor* | xargs -I {} rm -rf ./{}/0
-ls -d processor* | xargs -I {} cp -r 0.org ./{}/0
+\ls -d processor* | xargs -I {} rm -rf ./{}/0
+\ls -d processor* | xargs -I {} cp -r 0.org ./{}/0
 
 runParallel checkMesh
 #mpirun -n $(getNumberOfProcessors) checkMesh -parallel
-if [[ $? -ne 0 ]]; then
- echo "checkMesh failed"
- exit
-fi
+[[ $? -ne 0 ]] && echo "checkMesh failed"
 
 runParallel potentialFoam
 #mpirun -n $(getNumberOfProcessors) potentialFoam -parallel
 if [[ $? -ne 0 ]]; then
  echo "potentialFoam failed"
- exit
+ exit 1
 fi
