@@ -1,6 +1,6 @@
 # Open-closed cooling DrivAer variant with Static Mesh
 
-## Recipes
+## Simplified Case Recipes
 
 These are scripts to configure a modified [occDrivAerStaticMesh](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/occDrivAerStaticMesh) case with minimal effort.
 
@@ -33,14 +33,13 @@ Now, all you need to do is solve:
 ./Solve
 ```
 
-
-Note: the list of changes from the original
+### Note: the list of changes from the original
 - Change the number of iterations form 2000 to 200
 - Change domain decomposition method to "scotch" to be flexible with any number of MPI ranks
 - Increase the write interval to remove potential I/O overhead
 
 The below is the original README file for reference
-
+## 
 
 ## Authors
 Original setup: Charles Mockett, Hendrik Hetmann and Felix Kramer (Upstream CFD GmbH), 2022-2023
@@ -153,3 +152,4 @@ Figure 10: Various residual plots for the three mesh resolutions
 [^AutoCFD3]: https://autocfd.org/autocfd3
 [^AutoCFD4]: https://autocfd.org/
 [^TUMDrivAer]: https://www.epc.ed.tum.de/aer/forschungsgruppen/automobilaerodynamik/drivaer
+
