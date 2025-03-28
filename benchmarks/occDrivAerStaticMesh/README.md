@@ -25,8 +25,7 @@ Now, you can set up the case for a given number of processes:
 ```
 
 This will decompose and run potentialFoam.
-<NPROCS> is an integer and this is the number of MPI ranks to be used for the main solver below.
-
+`<NPROCS>` is an integer and this is the number of MPI ranks to be used for the main solver below.
 Now, all you need to do is solve:
 
 ```bash
@@ -34,11 +33,11 @@ Now, all you need to do is solve:
 ```
 
 ### Note: the list of changes from the original
-- Change the number of iterations form 2000 to 200
-- Change domain decomposition method to "scotch" to be flexible with any number of MPI ranks
+- Change the number of iterations from 2000 to 200
+- Change the domain decomposition method to "scotch" for flexible use of any number of MPI ranks
 - Increase the write interval to remove potential I/O overhead
 
-The below is the original README file for reference
+The below is the original README file for reference.
 ## 
 
 ## Authors
