@@ -2,7 +2,7 @@
 
 ## Simplified Case Recipes
 
-These are scripts to configure a modified [occDrivAerStaticMesh](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/occDrivAerStaticMesh) case with minimal effort.
+These are scripts to configure a modified [occDrivAerStaticMesh](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/occDrivAerStaticMesh) case with minimal effort.  This workload can be run with [OpenCFD OpenFOAM](https://openfoam.com) version only.
 
 If you rerun this workload in the same directory, then Please clean the case before any of the below scripts:
 
