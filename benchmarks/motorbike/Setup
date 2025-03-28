@@ -42,3 +42,4 @@ if [[ $? -ne 0 ]]; then
  echo "potentialFoam failed"
  exit 1
 fi
+
