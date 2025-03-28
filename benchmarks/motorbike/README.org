@@ -1,6 +1,6 @@
 * Scalable motorbike benchmark
 
-There are scripts to configure a motorbike example with minimal effort.
+These are scripts to configure a motorbike example with minimal effort.
 
 If you rerun this workload in the same directory, then Please clean the case before any of the below scripts.
 
