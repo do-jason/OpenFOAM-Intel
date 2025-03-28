@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cd ${0%/*} || exit 1    # run from this directory
+
+[[ $FOAM_API =~ ^[0-9]{2}(06|12)$ ]] || { echo "Onely OpenCFD OpenFOAM(openfoam.com) is supported."; exit 1; }
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+\rm -rf postProcessing
+
+runParallel simpleFoam
+#mpirun -n $(getNumberOfProcessors) simpleFoam -parallel
+if [[ $? -ne 0 ]]; then
+ echo "simpleFoam failed"
+ exit
+fi
+

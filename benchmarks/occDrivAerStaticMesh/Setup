@@ -1,0 +1,51 @@
+#!/bin/bash
+
+cd ${0%/*} || exit 1    # run from this directory
+
+[[ $FOAM_API =~ ^[0-9]{2}(06|12)$ ]] || { echo "Onely OpenCFD OpenFOAM(openfoam.com) is supported."; exit 1; }
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+if [[ $# -lt 1 ]]; then
+ # Assume 2 threads per physical core
+ NPROCS=$(($(nproc)/2))
+ echo "NPROCS is not specified. Using existing number of cores of this node..."
+else
+ NPROCS=$1
+fi
+
+
+echo "Running with $NPROCS procs."
+sed -i "/nCores/c\nCores $NPROCS;" system/include/caseDefinition
+
+runApplication decomposePar -constant
+if [[ $? -ne 0 ]]; then
+ echo "decomposePar failed"
+ exit
+fi
+# Copy time 0 data to processor*
+\ls -d processor* | xargs -I {} \rm -rf ./{}/0
+\ls -d processor* | xargs -I {} \cp -r 0.orig ./{}/0 > /dev/null 2>&1
+
+runParallel renumberMesh -constant -overwrite
+#mpirun -n $(getNumberOfProcessors) renumberMesh -constant -overwrite -parallel
+if [[ $? -ne 0 ]]; then
+ echo "renumberMesh failed"
+ exit
+fi
+
+runParallel potentialFoam -initialiseUBCs
+#mpirun -n $(getNumberOfProcessors) potentialFoam -initialiseUBCs -parallel
+if [[ $? -ne 0 ]]; then
+ echo "potentialFoam failed"
+ exit
+fi
+
+runParallel applyBoundaryLayer -ybl "0.0450244"
+#mpirun -n $(getNumberOfProcessors) applyBoundaryLayer -ybl "0.0450244" -parallel
+if [[ $? -ne 0 ]]; then
+ echo "applyBoundaryLayer failed"
+ exit
+fi
+
