@@ -61,7 +61,7 @@ The open-closed cooling modification of the DrivAer represents a typical industr
 
 The setup was modified to suit the requirements of the OpenFOAM HPC Challenge (2025), by opting for a steady-state RANS simulation, fixing the inner iterations of the SIMPLE solver, and providing pre-generated mesh files of various resolutions that are suitable for a static simulation.
 
-<img src="figures/occDrivAer.png" alt="Figure 1" width="768">
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/occDrivAer.png" alt="Figure 1" width="768">
 
 Figure 1: occDrivAer shape.
 
@@ -76,7 +76,7 @@ Figure 1: occDrivAer shape.
 ## Numerical Setup
 The coordinate system's origin is located in the middle of the front axle. From there, the computational domain spans 40m upstream and 80m downstream as indicated in Figure 2. The domain's height is 20m where the floor is located at -0.3176m. The width is 44m and spans from -22m to 22m.
 
-<img src="figures/domain_with_cell_level.png" alt="Figure 2" width="900">
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/domain_with_cell_level.png" alt="Figure 2" width="900">
 
 Figure 2: Computational domain with grid levels for mesh refinement.
 
@@ -85,17 +85,17 @@ The grid levels in Figure 2 are chosen to resolve the turbulence in the focus re
 ## Mesh
 The `fine` mesh was generated using a two-step snappyHexMesh approach and commences from a background blockMesh resolution of cell level $L_0=1$m. The major surface refinement level is $L_9=1.95$mm with the maximum feature refinement level of $L_{10}=0.96$mm. There are 2 prism layers with the wall closest cell having a wall-normal size of e.g. 0.8mm on the roof top. The mesh aims to be used with wall functions, and values of $y^+\gt 30$ are achieved for the major parts of the mesh, see Figure 3.
 
-<img src="figures/yplus_RANS.png" alt="Figure 3" width="500">
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/yplus_RANS.png" alt="Figure 3" width="500">
 
 Figure 3: Snapshot of $y^+$ from initial RANS.
 
 After generation of the background mesh, the mesh is refined and adapted to the surface using snappyHexMesh, resulting in a total of 236M cells.
 
-<img src="figures/mesh_mid_center.png" alt="Figure 4" height="400">
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/mesh_mid_center.png" alt="Figure 4" height="400">
 
 Figure 4: Side view on the mid cut of the mesh.
 
-<img src="figures/mesh_underbody_cut_axle.png" alt="Figure 5" height="400">
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/mesh_underbody_cut_axle.png" alt="Figure 5" height="400">
 
 Figure 5: Underbody view on a plane cutting the front axle.
 
@@ -127,23 +127,23 @@ After downloading, copy the tar file to the `constant/` folder, and untar with `
 - Post-processing data ($C_l$, $C_d$, $C_p$) is stored under `postProcessing`
 
 ## Preliminary Results
-<img src="figures/results_p_atSurface.png" >
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/results_p_atSurface.png" >
 
 Figure 6: Pressure at the surface.
 
-| <img src="figures/results_velocitySlice_y=0m.png" width="500"> | <img src="figures/results_velocitySlice_y=75e-2m.png" width="500"> |
+| <img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/results_velocitySlice_y=0m.png" width="500"> | <img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/results_velocitySlice_y=75e-2m.png" width="500"> |
 |-|-|
 | Figure 7: Velocity slice at y = 0m. | Figure 8: Velocity slice at y = 0.75m. |
 
 ### Drag coefficient
-<img src="figures/plot_Cd.png" width=600 >
+<img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/plot_Cd.png" width=600 >
 
 Figure 9: Drag coefficient evolution over iterations for the three mesh resolutions
 
 ### Residuals
-| <img src="figures/plot_residual_p.png" width="500"> | <img src="figures/plot_residual_Ux.png" width="500"> |
+| <img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/plot_residual_p.png" width="500"> | <img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/plot_residual_Ux.png" width="500"> |
 |-|-|
-| <img src="figures/plot_residual_Uy.png" width="500"> | <img src="figures/plot_residual_Uz.png" width="500"> |
+| <img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/plot_residual_Uy.png" width="500"> | <img src="https://develop.openfoam.com/committees/hpc/-/blob/develop/incompressible/simpleFoam/occDrivAerStaticMesh/figures/plot_residual_Uz.png" width="500"> |
 
 Figure 10: Various residual plots for the three mesh resolutions
 
