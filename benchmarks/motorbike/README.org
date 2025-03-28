@@ -9,13 +9,13 @@ If you rerun this workload in the same directory, then Please clean the case bef
 #+end_src
 
 
-First decide the size and mesh.  This can be configured with the inital blockmesh size:
+First, decide the size and mesh.  This can be configured with the initial blockmesh size:
 
 #+begin_src bash
 ./Mesh <X> <Y> <Z>
 #+end_src
 
-Here is an example of the sizes of meshes that will be created for different values:
+Here is an example of meshes that will be created with different value pairs:
 
 |-------+-------+-------+----------|
 |   X   |   Y   |   Z   |  MCells  |
@@ -32,7 +32,7 @@ Here is an example of the sizes of meshes that will be created for different val
 |-------+-------+-------+----------|
 
 It is recommended to keep the same proportions among X, Y, and Z here.
-Note: All meshing will be run with 16 procs although you can update if necessary.
+Note: All meshing will be run with 16 MPI processes although you can change if necessary.
 Note: Some applications will use mpirun. You need to setup required MPI settings before running Mesh, Setup, and Solve.
 
 Now, you can set up the case for a given number of processes (calling setup again will wipe existing partitions):
@@ -42,7 +42,7 @@ Now, you can set up the case for a given number of processes (calling setup agai
 #+end_src
 
 This will decompose and run potentialFoam.
-<NPROCS> is integer and this is the number of MPI ranks to be used for main solver below.
+<NPROCS> is an integer and this is the number of MPI ranks to be used for the main solver below.
 
 
 Now, all you need to do is solve.  Either run simpleFoam or call:
