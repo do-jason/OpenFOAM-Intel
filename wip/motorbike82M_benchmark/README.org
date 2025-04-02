@@ -1,5 +1,0 @@
-* 82M Motorbike case
-
-To be used as a benchmark.
-
-TODO: requires testing.
