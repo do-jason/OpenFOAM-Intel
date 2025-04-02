@@ -7,7 +7,7 @@ This repository contains the following benchmarks:
 + [Open-closed cooling DrivAer variant with Static Mesh](benchmarks/occDrivAerStaticMesh/README.md) - A modified version for scalable and shorter run
 
 <br/>
-This is forked from [OpenFOAM-Intel](https://github.com/OpenFOAM/OpenFOAM-Intel) which is not maintained any more. And "obsolete" branch has old contents for Intel Xeon Phi Processor.
+This is forked from [OpenFOAM-Intel](https://github.com/OpenFOAM/OpenFOAM-Intel/) which is not maintained any more. And "obsolete" branch has old contents for Intel Xeon Phi Processor.
 <br/>
 <br/>
 <br/>
