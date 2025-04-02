@@ -2,7 +2,7 @@
 
 cd ${0%/*} || exit 1    # run from this directory
 
-[[ $FOAM_API =~ ^[0-9]{2}(06|12)$ ]] || { echo "Onely OpenCFD OpenFOAM(openfoam.com) is supported."; exit 1; }
+[[ $FOAM_API =~ ^[0-9]{2}(06|12)$ ]] || { echo "Only OpenCFD OpenFOAM(openfoam.com) is supported."; exit 1; }
 
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
@@ -10,6 +10,7 @@ cd ${0%/*} || exit 1    # run from this directory
 if [[ $# -lt 1 ]]; then
  # Assume 2 threads per physical core
  NPROCS=$(($(nproc)/2))
+ echo "Usage: $0 NPROCS"
  echo "NPROCS is not specified. Using existing number of cores of this node..."
 else
  NPROCS=$1
