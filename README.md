@@ -49,7 +49,7 @@ Violations of the Trademark are monitored, and will be duly prosecuted.
 <br/>
 <br/>
 
-# About OpenFOAM (Foundation)
+# About OpenFOAM (The OpenFOAM Foundation Ltd)
 
 OpenFOAM is a free, open source computational fluid dynamics (CFD) software
 package released by the OpenFOAM Foundation. It has a large user base across
