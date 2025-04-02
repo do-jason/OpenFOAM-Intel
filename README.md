@@ -1,13 +1,13 @@
 
-## Scalable OpenFOAM benchmarks
+# Scalable OpenFOAM benchmarks
 
 This repository contains the following benchmarks:
   
-[Scalable motorbike benchmark](benchmarks/motorbike/README.org) - A modified version of the OpenFOAM tutorial case supporting different resolution meshes
-[Open-closed cooling DrivAer variant with Static Mesh](benchmarks/occDrivAerStaticMesh/README.md) - A modified version for scalable and shorter run
++ [Scalable motorbike benchmark](benchmarks/motorbike/README.org) - A modified version of the OpenFOAM tutorial case supporting different resolution meshes
++ [Open-closed cooling DrivAer variant with Static Mesh](benchmarks/occDrivAerStaticMesh/README.md) - A modified version for scalable and shorter run
 
 
-## About OpenFOAM (OpenCFD Ltd)
+# About OpenFOAM (OpenCFD Ltd)
 OpenFOAM is a free, open source CFD software [released and developed by OpenCFD Ltd since 2004](http://www.openfoam.com/history/).
 It has a large user base across most areas of engineering and science, from both commercial and academic organisations.
 OpenFOAM has an extensive range of features to solve anything from complex fluid flows involving chemical reactions, turbulence and heat transfer, to acoustics, solid mechanics and electromagnetics.
@@ -43,7 +43,7 @@ any questions about the use of the OpenFOAM trademark.
 Violations of the Trademark are monitored, and will be duly prosecuted.
 
 
-## About OpenFOAM (Foundation)
+# About OpenFOAM (Foundation)
 
 OpenFOAM is a free, open source computational fluid dynamics (CFD) software
 package released by the OpenFOAM Foundation. It has a large user base across
