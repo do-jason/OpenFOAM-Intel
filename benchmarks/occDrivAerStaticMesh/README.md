@@ -4,20 +4,23 @@
 
 These are scripts to configure a modified [occDrivAerStaticMesh](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/occDrivAerStaticMesh) case with minimal effort.  This workload can be run with [OpenCFD OpenFOAM](https://openfoam.com) version only.
 
-If you rerun this workload in the same directory, then Please clean the case before any of the below scripts:
+<br/>
++ If you rerun this workload in the same directory, then Please clean the case before any of the below scripts:
 
 ```bash
 ./Clean
 ```
 
-First decide the mesh size.  This will download polyMesh from the internet.
+<br/>
++ First decide the mesh size.  This will download polyMesh from the internet.
 Possible options are 65M, 110M, and 236M.
 
 ```bash
 ./Mesh 65M|110M|236M
 ```
 
-Some applications will use mpirun. You need to setup required MPI settings before running Setup and Solve.
+<br/>
++ Some applications will use mpirun. You need to setup required MPI settings before running Setup and Solve.
 Now, you can set up the case for a given number of processes:
 
 ```bash
@@ -26,11 +29,16 @@ Now, you can set up the case for a given number of processes:
 
 This will decompose and run potentialFoam.
 `<NPROCS>` is an integer and this is the number of MPI ranks to be used for the main solver below.
-Now, all you need to do is solve:
+
+<br/>
++ Now, all you need to do is solve:
 
 ```bash
 ./Solve
 ```
+
+<br/>
+<br/>
 
 ### Note: the list of changes from the original
 - Reduced the number of iterations from 2000 to 200
