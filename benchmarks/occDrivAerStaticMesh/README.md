@@ -2,7 +2,7 @@
 
 ## Simplified Case Recipes
 
-These are scripts to configure a modified [occDrivAerStaticMesh](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/occDrivAerStaticMesh) case with minimal effort.  This workload can be run with [OpenCFD OpenFOAM](https://openfoam.com) version only.
+These scripts are for a modified [occDrivAerStaticMesh](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/occDrivAerStaticMesh) case with minimal effort.  This workload can be run with [OpenCFD OpenFOAM](https://openfoam.com) version only.
 
 + If you rerun this workload in the same directory, then Please clean the case before any of the below scripts:
 
@@ -36,6 +36,7 @@ This will decompose and run potentialFoam.
 <br/>
 
 ### Note: the list of changes from the original
+- This is fixed solver iteration case only
 - Reduced the number of iterations from 2000 to 200
 - Changed the domain decomposition method to "scotch" for flexible use of any number of MPI ranks
 - Removed epsilon, nuTilda, ReThetat, and gammaInt fields in system/solverInfo
