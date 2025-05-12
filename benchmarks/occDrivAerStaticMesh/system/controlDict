@@ -70,4 +70,16 @@ functions
     #include "wallShearStress" 
 }
 
+OptimisationSwitches
+{
+    // Additional PstreamBuffers tuning parameters (experimental)
+    //    0 : (legacy PEX)
+    //        * all-to-all for buffer sizes [legacy approach]
+    //        * point-to-point for contents
+    //    1 : (hybrid PEX)
+    //        * NBX for buffer sizes [new approach]
+    //        * point-to-point for contents
+    pbufs.tuning    1;
+}
+
 // ************************************************************************* //
