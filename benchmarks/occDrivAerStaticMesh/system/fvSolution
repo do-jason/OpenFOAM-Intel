@@ -25,6 +25,13 @@ solvers
         tolerance       0;
         relTol          0;
         maxIter         12;
+        coarsestLevelCorr
+        {
+            solver          PCG;
+            preconditioner  DIC;
+            minIter         35;
+            maxIter         35;
+        }
     }
 
     Phi
