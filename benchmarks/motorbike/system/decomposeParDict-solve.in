@@ -23,6 +23,11 @@ scotchCoeffs
 {
 }
 
+metisCoeffs
+{
+	method			k-way;
+}
+
 simpleCoeffs
 {
     n               (4 1 1);

@@ -23,6 +23,11 @@ numberOfSubdomains  $nCores;
 //       distance method "exactDistance" use hierachical instead
 method              $decompositionMethod; //kahip; //hierarchical;
 
+metisCoeffs
+{
+	method			k-way;
+}
+
 hierarchicalCoeffs
 {
     n               $nHierarchical;
