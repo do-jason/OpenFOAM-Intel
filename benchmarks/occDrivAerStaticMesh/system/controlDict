@@ -79,7 +79,7 @@ OptimisationSwitches
     //    1 : (hybrid PEX)
     //        * NBX for buffer sizes [new approach]
     //        * point-to-point for contents
-    pbufs.tuning    1;
+    pbufs.tuning    0;
 }
 
 // ************************************************************************* //
